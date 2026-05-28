@@ -1,0 +1,63 @@
+/* Design tokens — Vehicle Passport visual system */
+
+:root {
+  /* Colour — warm light (default) */
+  --bg: #F6F4EF;
+  --surface: #FBFAF6;
+  --surface-2: #FFFFFF;
+  --ink: #1A1A1A;
+  --ink-2: #3A3A38;
+  --ink-soft: #6B6A62;
+  --ink-faint: #9C998E;
+  --line: #E6E2D8;
+  --line-2: #EFEBE0;
+  --accent: #2E5D4F;
+  --accent-soft: #DCE5E0;
+  --accent-ink: #1B3C32;
+  --tan: #C8B89E;
+  --tan-soft: #ECE3D2;
+  --warn: #B36A1F;
+  --warn-soft: #F2E1CB;
+  --danger: #8C2A20;
+
+  /* Typography */
+  --font-display: 'Newsreader', Georgia, serif;
+  --font-body: 'Geist', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+  /* Spacing */
+  --pad: 20px;
+  --pad-lg: 32px;
+  --card-pad: 22px;
+  --row-gap: 18px;
+
+  /* Radii */
+  --radius: 6px;
+  --radius-lg: 10px;
+
+  /* Layout */
+  --max: 1180px;
+  --page-x: 28px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15140F;
+    --surface: #1B1A14;
+    --surface-2: #211F18;
+    --ink: #F4F2EC;
+    --ink-2: #D0CDC4;
+    --ink-soft: #A8A59B;
+    --ink-faint: #6B6860;
+    --line: #2B2920;
+    --line-2: #332F24;
+    --accent: #7BB29F;
+    --accent-soft: #1E3330;
+    --accent-ink: #A8D4C8;
+    --tan: #9A8870;
+    --tan-soft: #2A241A;
+    --warn: #D4843A;
+    --warn-soft: #2A1E0F;
+    --danger: #C44035;
+  }
+}
