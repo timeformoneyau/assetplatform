@@ -1,12 +1,13 @@
 import {
+  type LucideIcon,
   Plus, Upload, ArrowLeft, ArrowRight, Check, Edit3, Trash2,
   FileText, Image, Car, ChevronRight, ChevronDown, Info, Eye,
   Download, Sparkles, Home, File, User, Settings, Search,
   Wrench, Shield, ClipboardList, CreditCard, ShieldCheck,
-  Circle, AlertTriangle, Zap, RotateCcw, HelpCircle, X, Camera
+  Circle, AlertTriangle, Zap, RotateCcw, HelpCircle, X, Camera,
 } from 'lucide-react';
 
-const ICON_MAP: Record<string, React.ComponentType<{ size?: number; strokeWidth?: number; className?: string; style?: React.CSSProperties }>> = {
+const ICON_MAP: Record<string, LucideIcon> = {
   plus: Plus,
   upload: Upload,
   arrow_left: ArrowLeft,
@@ -40,7 +41,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ size?: number; strokeWidth?
   x: X,
   rotate: RotateCcw,
   camera: Camera,
-  'clipboard': ClipboardList,
+  clipboard: ClipboardList,
 };
 
 interface IconProps {
