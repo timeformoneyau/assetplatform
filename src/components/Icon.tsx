@@ -3,7 +3,7 @@ import {
   FileText, Image, Car, ChevronRight, ChevronDown, Info, Eye,
   Download, Sparkles, Home, File, User, Settings, Search,
   Wrench, Shield, ClipboardList, CreditCard, ShieldCheck,
-  Circle, AlertTriangle, Zap, RotateCcw, HelpCircle, X
+  Circle, AlertTriangle, Zap, RotateCcw, HelpCircle, X, Camera
 } from 'lucide-react';
 
 const ICON_MAP: Record<string, React.ComponentType<{ size?: number; strokeWidth?: number; className?: string; style?: React.CSSProperties }>> = {
@@ -39,6 +39,7 @@ const ICON_MAP: Record<string, React.ComponentType<{ size?: number; strokeWidth?
   other: HelpCircle,
   x: X,
   rotate: RotateCcw,
+  camera: Camera,
   'clipboard': ClipboardList,
 };
 
