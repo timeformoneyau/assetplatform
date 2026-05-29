@@ -339,7 +339,7 @@ function ConfidenceChip({ confidence }: { confidence: number }) {
       fontFamily: 'var(--font-mono)',
       fontSize: 10.5,
       padding: '2px 7px',
-      borderRadius: 999,
+      borderRadius: 'var(--radius)',
       background: low ? 'var(--warn-soft)' : 'var(--accent-soft)',
       color: low ? 'var(--warn)' : 'var(--accent-ink)',
       letterSpacing: '0.03em',

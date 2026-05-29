@@ -39,10 +39,10 @@ export function PassportPreview() {
     ? `${ownershipYears}y ${ownershipMonths % 12}m`
     : `${ownershipMonths}mo`;
 
-  const vinDisplay = vehicle.vin ? vehicle.vin : 'Not recorded';
+  const vinDisplay = vehicle.vin || 'Not recorded';
 
   return (
-    <div className="page-wrap screen-enter" style={{ paddingTop: 32 }}>
+    <div className="page-wrap screen-enter" style={{ paddingTop: 28 }}>
       <Breadcrumb items={[
         { label: 'Vehicles', to: '/' },
         { label: `${vehicle.year} ${vehicle.make} ${vehicle.model}`, to: `/vehicles/${vehicleId}` },
@@ -55,77 +55,73 @@ export function PassportPreview() {
         right={
           <div className="row" style={{ gap: 8 }}>
             <button className="btn btn-secondary btn-sm">
-              <Icon name="download" size={13} /> Export PDF
+              <Icon name="download" size={12} /> Export PDF
             </button>
-            <button
-              className="btn btn-ghost btn-sm"
-              onClick={() => navigate(`/vehicles/${vehicleId}`)}
-            >
-              <Icon name="arrow_left" size={13} /> Back to editing
+            <button className="btn btn-ghost btn-sm" onClick={() => navigate(`/vehicles/${vehicleId}`)}>
+              <Icon name="arrow_left" size={12} /> Back to editing
             </button>
           </div>
         }
       />
 
-      {/* Passport document */}
+      {/* Passport document — inner hairline frame via CSS ::before */}
       <div className="passport-doc">
-        {/* Head */}
+        {/* Header: eyebrow + title + circular seal */}
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'flex-start',
           paddingBottom: 24,
-          borderBottom: '1.5px solid var(--line)',
+          borderBottom: '1px solid var(--line-strong)',
           marginBottom: 28,
           gap: 24,
         }}>
           <div>
-            <div className="meta" style={{ marginBottom: 10, color: 'var(--ink-faint)' }}>
-              VEHICLE PASSPORT · V0.4
+            <div className="eyebrow" style={{ marginBottom: 10, color: 'var(--ink-faint)' }}>
+              Vehicle passport · v0.4
             </div>
-            <h1 style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 36,
-              fontWeight: 400,
-              lineHeight: 1.1,
-              letterSpacing: '-0.012em',
-            }}>
-              {vehicle.year} {vehicle.make}{' '}
-              <em style={{ color: 'var(--ink-soft)' }}>{vehicle.model}</em>
+            <h1 className="h-display" style={{ marginBottom: 6 }}>
+              {vehicle.year} {vehicle.make} {vehicle.model}
             </h1>
             {vehicle.variant && (
-              <div style={{ fontSize: 15, color: 'var(--ink-soft)', marginTop: 6 }}>{vehicle.variant}</div>
+              <div style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: 11,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                color: 'var(--ink-soft)',
+                marginTop: 6,
+              }}>
+                {vehicle.variant}
+              </div>
             )}
           </div>
-          {/* Seal */}
+          {/* Circular verification seal */}
           <div style={{
-            width: 72, height: 72, borderRadius: '50%',
-            border: '1.5px solid var(--accent)',
+            width: 80, height: 80,
+            borderRadius: '50%',
+            border: '2px solid var(--accent)',
             display: 'flex', flexDirection: 'column',
             alignItems: 'center', justifyContent: 'center',
-            flexShrink: 0, gap: 1,
-            background: 'var(--surface-2)',
+            flexShrink: 0, gap: 2,
+            background: 'var(--accent-soft)',
           }}>
+            <Icon name="check" size={14} style={{ color: 'var(--accent)', marginBottom: 2 }} />
             {['VEHICLE', 'PASSPORT', vehicle.registration_number].map((t, i) => (
               <div key={i} style={{
                 fontFamily: 'var(--font-mono)',
-                fontSize: 8,
-                letterSpacing: '0.08em',
+                fontSize: 7.5,
+                letterSpacing: '0.1em',
                 textTransform: 'uppercase',
-                color: 'var(--accent)',
-                lineHeight: 1.4,
+                color: 'var(--accent-ink)',
+                lineHeight: 1.3,
               }}>{t}</div>
             ))}
           </div>
         </div>
 
-        {/* Identifying details */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: 24,
-          marginBottom: 28,
-        }}>
+        {/* Vehicle facts */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20, marginBottom: 28 }}>
           {[
             { label: 'Registration', val: vehicle.registration_number },
             { label: 'VIN', val: vinDisplay },
@@ -134,99 +130,97 @@ export function PassportPreview() {
           ].map(({ label, val }) => (
             <div key={label}>
               <div className="eyebrow" style={{ marginBottom: 4 }}>{label}</div>
-              <div className="mono" style={{ fontSize: 13, color: 'var(--ink)' }}>{val}</div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--ink)', fontFeatureSettings: '"tnum"' }}>{val}</div>
             </div>
           ))}
         </div>
 
-        {/* Headline stats strip */}
+        {/* Stat tiles */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(4, 1fr)',
-          border: '1px solid var(--line)',
+          border: '1px solid var(--line-strong)',
           borderRadius: 'var(--radius)',
           overflow: 'hidden',
           marginBottom: 28,
+          background: 'var(--surface-2)',
         }}>
           {[
             { label: 'Records', val: String(records.length) },
-            { label: 'Services logged', val: String(serviceCount) },
-            { label: 'Current odometer', val: vehicle.current_odometer.toLocaleString('en-AU') + ' km' },
-            { label: 'In current ownership', val: ownershipLabel },
+            { label: 'Services', val: String(serviceCount) },
+            { label: 'Confirmed', val: String(confirmedCount) },
+            { label: 'Odometer', val: vehicle.current_odometer.toLocaleString('en-AU') + ' km' },
           ].map(({ label, val }, i) => (
             <div key={label} style={{
-              padding: '14px 18px',
+              padding: '14px 16px',
               borderRight: i < 3 ? '1px solid var(--line)' : 'none',
             }}>
               <div className="eyebrow" style={{ marginBottom: 5 }}>{label}</div>
-              <div style={{ fontFamily: 'var(--font-display)', fontSize: 22, color: 'var(--ink)' }}>{val}</div>
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 18, fontWeight: 500, color: 'var(--ink)', fontFeatureSettings: '"tnum"' }}>{val}</div>
             </div>
           ))}
         </div>
 
         {/* Disclaimer */}
         <div style={{
-          borderLeft: '3px solid var(--tan)',
-          paddingLeft: 16,
-          marginBottom: 32,
-          background: 'var(--tan-soft)',
-          padding: '12px 16px',
+          background: 'var(--surface-2)',
+          border: '1px solid var(--line)',
+          borderLeft: '3px solid var(--line-strong)',
+          padding: '11px 14px',
           borderRadius: 'var(--radius)',
+          marginBottom: 28,
         }}>
-          <p style={{ fontSize: 13, color: 'var(--ink-2)', lineHeight: 1.6 }}>
-            This passport summarises records added by the vehicle owner. Some records may be supported by
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-soft)', lineHeight: 1.6, letterSpacing: '0.03em' }}>
+            This passport summarises records added by the vehicle owner. Some records are supported by
             uploaded documents. The passport does not replace an independent inspection and does not
             guarantee vehicle condition.
           </p>
         </div>
 
-        {/* Timeline section */}
-        <div style={{ marginBottom: 32 }}>
-          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 16 }}>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 400 }}>
-              Service &amp; ownership history
-            </h2>
-            <span style={{ fontSize: 13, color: 'var(--ink-faint)' }}>{records.length} record{records.length !== 1 ? 's' : ''}</span>
+        {/* History */}
+        <div style={{ marginBottom: 28 }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 14 }}>
+            <h2 className="h-section">Service &amp; ownership history</h2>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: 'var(--ink-faint)', letterSpacing: '0.06em' }}>
+              {records.length} record{records.length !== 1 ? 's' : ''}
+            </span>
           </div>
 
           {records.length === 0 ? (
-            <p className="muted" style={{ fontSize: 14 }}>No records have been added to this passport.</p>
+            <p className="muted" style={{ fontSize: 13.5 }}>No records have been added to this passport.</p>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               {records.map((rec, i) => (
                 <div key={rec.id} style={{
                   display: 'flex',
-                  gap: 14,
-                  paddingBottom: 14,
-                  borderBottom: i < records.length - 1 ? '1px solid var(--line-2)' : 'none',
-                  marginBottom: i < records.length - 1 ? 14 : 0,
+                  gap: 12,
+                  padding: '11px 0',
+                  borderBottom: i < records.length - 1 ? '1px solid var(--line)' : 'none',
                 }}>
-                  <div style={{ paddingTop: 3 }}>
+                  <div style={{ paddingTop: 4 }}>
                     <span className="status" data-st={rec.status}><span className="dot" /></span>
                   </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{
-                      fontFamily: 'var(--font-display)',
-                      fontSize: 16, fontWeight: 400,
-                      marginBottom: 4,
-                    }}>{rec.summary}</div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontWeight: 500, fontSize: 13.5, marginBottom: 3, color: 'var(--ink)' }}>{rec.summary}</div>
                     <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
-                      <span className="meta" style={{ color: 'var(--ink-faint)' }}>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--ink-faint)' }}>
                         {RECORD_TYPE_LABELS[rec.record_type]} · {fmtDate(rec.record_date)}
                       </span>
                       {rec.odometer != null && (
-                        <span className="meta" style={{ color: 'var(--ink-faint)' }}>{fmtKm(rec.odometer)}</span>
+                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--ink-faint)', letterSpacing: '0.04em' }}>
+                          {fmtKm(rec.odometer)} km
+                        </span>
                       )}
                       <StatusBadge status={rec.status} />
                       {rec.doc_name && (
-                        <span className="meta" style={{ color: 'var(--ink-soft)' }}>
-                          <Icon name="doc" size={10} style={{ marginRight: 2 }} /> Evidence attached
+                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--ink-soft)', letterSpacing: '0.04em' }}>
+                          <Icon name="doc" size={10} style={{ marginRight: 2 }} /> Evidence
                         </span>
                       )}
                     </div>
                   </div>
                   {rec.cost != null && (
-                    <div className="mono" style={{ fontSize: 13, color: 'var(--ink-soft)', flexShrink: 0 }}>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--ink-soft)', flexShrink: 0, fontFeatureSettings: '"tnum"' }}>
                       {fmtMoney(rec.cost)}
                     </div>
                   )}
@@ -237,17 +231,15 @@ export function PassportPreview() {
         </div>
 
         {/* Status legend */}
-        <div style={{ marginBottom: 32 }}>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 400, marginBottom: 14 }}>
-            What the labels mean
-          </h2>
+        <div style={{ marginBottom: 28 }}>
+          <h2 className="h-section" style={{ marginBottom: 14 }}>What the labels mean</h2>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
             {(['confirmed', 'document', 'ai', 'declared'] as RecordStatus[]).map(st => (
               <div key={st} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
                 <span className="status" data-st={st} style={{ marginTop: 2 }}><span className="dot" /></span>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 500 }}>{STATUS_LABEL[st]}</div>
-                  <div style={{ fontSize: 12, color: 'var(--ink-soft)', lineHeight: 1.5 }}>{STATUS_DETAIL[st]}</div>
+                  <div style={{ fontSize: 12.5, fontWeight: 600, marginBottom: 2 }}>{STATUS_LABEL[st]}</div>
+                  <div style={{ fontSize: 11.5, color: 'var(--ink-soft)', lineHeight: 1.5 }}>{STATUS_DETAIL[st]}</div>
                 </div>
               </div>
             ))}
@@ -257,19 +249,18 @@ export function PassportPreview() {
         {/* Footer */}
         <div style={{
           borderTop: '1px solid var(--line)',
-          paddingTop: 16,
+          paddingTop: 14,
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
         }}>
-          <span className="meta" style={{ color: 'var(--ink-faint)' }}>Generated · {fmtDate(new Date().toISOString().slice(0, 10))}</span>
-          <span className="meta" style={{ color: 'var(--ink-faint)' }}>Logbook · Internal preview</span>
+          <span className="eyebrow">Generated · {fmtDate(new Date().toISOString().slice(0, 10))}</span>
+          <span className="eyebrow">Logbook · Internal preview</span>
         </div>
       </div>
 
-      {/* Below-doc hint */}
-      <p style={{ textAlign: 'center', fontSize: 13, color: 'var(--ink-faint)', marginTop: 24, paddingBottom: 40 }}>
-        Sharing this passport with buyers will be available in a future update.
+      <p style={{ textAlign: 'center', fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-faint)', marginTop: 20, paddingBottom: 40, letterSpacing: '0.04em' }}>
+        Sharing with buyers will be available in a future update.
       </p>
     </div>
   );
