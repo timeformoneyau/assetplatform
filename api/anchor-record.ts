@@ -29,7 +29,7 @@ export default async function handler(req: any, res: any) {
   }
 
   const client = network === 'mainnet' ? Client.forMainnet() : Client.forTestnet();
-  client.setOperator(AccountId.fromString(accountId), PrivateKey.fromString(privateKey));
+  client.setOperator(AccountId.fromString(accountId), PrivateKey.fromStringECDSA(privateKey));
   client.setRequestTimeout(15_000);
 
   // Only non-sensitive fields go on the public ledger
