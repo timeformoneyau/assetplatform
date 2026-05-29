@@ -237,6 +237,17 @@ export function RecordDetail() {
                     {record.hcs_transaction_id}
                   </span>
                 </div>
+                {record.doc_hash && (
+                  <div className="detail-row" style={{ background: 'none', padding: 0 }}>
+                    <span className="detail-key">Doc SHA-256</span>
+                    <span className="detail-val" style={{
+                      fontFamily: 'var(--font-mono)', fontSize: 10,
+                      wordBreak: 'break-all', maxWidth: 160, color: 'var(--ink-soft)',
+                    }}>
+                      {record.doc_hash}
+                    </span>
+                  </div>
+                )}
               </div>
               <a
                 href={`https://hashscan.io/${record.hcs_network ?? 'testnet'}/transaction/${encodeURIComponent(record.hcs_transaction_id)}`}

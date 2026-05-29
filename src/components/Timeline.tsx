@@ -78,7 +78,25 @@ export function Timeline({ records, vehicleId, filter = 'all' }: Props) {
           </div>
           <div className="ledger-right">
             <div className="ledger-date">{fmtDate(rec.record_date)}</div>
-            <StatusBadge status={rec.status} />
+            <div className="row" style={{ gap: 6 }}>
+              <StatusBadge status={rec.status} />
+              {rec.hcs_transaction_id && (
+                <a
+                  href={`https://hashscan.io/${rec.hcs_network ?? 'testnet'}/transaction/${encodeURIComponent(rec.hcs_transaction_id)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={e => e.stopPropagation()}
+                  title="View on Hashscan"
+                  style={{
+                    display: 'inline-flex', alignItems: 'center',
+                    color: 'var(--accent)', opacity: 0.7,
+                    textDecoration: 'none',
+                  }}
+                >
+                  <Icon name="external_link" size={11} />
+                </a>
+              )}
+            </div>
           </div>
         </div>
       ))}

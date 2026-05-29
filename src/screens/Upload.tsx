@@ -48,11 +48,20 @@ export function Upload() {
       reader.readAsDataURL(file);
     });
 
+  const sha256Hex = async (file: File): Promise<string> => {
+    const buf = await file.arrayBuffer();
+    const digest = await crypto.subtle.digest('SHA-256', buf);
+    return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+  };
+
   const runPipeline = async () => {
     if (!selected) return;
     setUploadState('uploading');
     try {
-      const file_base64 = await toBase64(selected.file);
+      const [file_base64, docHash] = await Promise.all([
+        toBase64(selected.file),
+        sha256Hex(selected.file),
+      ]);
       setUploadState('parsing');
       const response = await fetch('/api/parse-document', {
         method: 'POST',
@@ -69,6 +78,7 @@ export function Upload() {
       }
       const extraction = await response.json();
       sessionStorage.setItem('vp_pending_extraction', JSON.stringify(extraction));
+      sessionStorage.setItem('vp_pending_doc_hash', docHash);
       navigate(`/vehicles/${vehicleId}/review`);
     } catch (err: any) {
       setErrorMsg(err.message ?? 'Something went wrong. Please try again.');

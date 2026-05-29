@@ -25,8 +25,15 @@ export function ReviewParsed() {
     return MOCK_EXTRACTION;
   }, []);
 
+  const docHash = useMemo<string | null>(() => {
+    return sessionStorage.getItem('vp_pending_doc_hash');
+  }, []);
+
   useEffect(() => {
-    return () => { sessionStorage.removeItem('vp_pending_extraction'); };
+    return () => {
+      sessionStorage.removeItem('vp_pending_extraction');
+      sessionStorage.removeItem('vp_pending_doc_hash');
+    };
   }, []);
 
   const [fields, setFields] = useState({
@@ -61,6 +68,7 @@ export function ReviewParsed() {
       hcs_transaction_id: null as string | null,
       hcs_sequence_number: null as number | null,
       hcs_network: null as 'testnet' | 'mainnet' | null,
+      doc_hash: docHash,
     };
 
     const recordId = addRecord(baseData);
@@ -84,6 +92,7 @@ export function ReviewParsed() {
           hcs_transaction_id: data.transaction_id,
           hcs_sequence_number: data.sequence_number ?? null,
           hcs_network: data.network ?? 'testnet',
+          doc_hash: docHash,
         });
       })
       .catch(() => {});

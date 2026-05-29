@@ -53,6 +53,7 @@ export interface VehicleRecord {
   hcs_transaction_id?: string | null;
   hcs_sequence_number?: number | null;
   hcs_network?: 'testnet' | 'mainnet' | null;
+  doc_hash?: string | null;
 }
 
 export interface EvidenceDocument {

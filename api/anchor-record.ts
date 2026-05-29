@@ -45,6 +45,7 @@ export default async function handler(req: any, res: any) {
     odometer: record.odometer ?? null,
     source: record.source_type,
     confirmed_at: record.confirmed_at,
+    ...(record.doc_hash ? { doc_sha256: record.doc_hash } : {}),
   });
 
   const submitTx = await new TopicMessageSubmitTransaction()

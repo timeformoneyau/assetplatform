@@ -5,6 +5,7 @@ import {
   Download, Sparkles, Home, File, User, Settings, Search,
   Wrench, Shield, ClipboardList, CreditCard, ShieldCheck,
   Circle, AlertTriangle, Zap, RotateCcw, HelpCircle, X, Camera,
+  ExternalLink,
 } from 'lucide-react';
 
 const ICON_MAP: Record<string, LucideIcon> = {
@@ -42,6 +43,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
   rotate: RotateCcw,
   camera: Camera,
   clipboard: ClipboardList,
+  external_link: ExternalLink,
 };
 
 interface IconProps {
