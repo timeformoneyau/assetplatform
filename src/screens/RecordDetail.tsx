@@ -194,6 +194,68 @@ export function RecordDetail() {
               {STATUS_DETAIL[record.status]}
             </p>
           </div>
+
+          {/* Hedera anchor */}
+          {record.hcs_transaction_id ? (
+            <div className="card" style={{ background: 'var(--accent-soft)', borderColor: 'var(--accent)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                <div style={{
+                  width: 28, height: 28, borderRadius: '50%',
+                  background: 'var(--accent)', display: 'flex',
+                  alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                }}>
+                  <Icon name="check" size={14} style={{ color: '#fff' }} />
+                </div>
+                <div style={{ fontWeight: 600, fontSize: 13.5, color: 'var(--accent-ink)' }}>
+                  Anchored to Hedera
+                </div>
+              </div>
+              <p style={{ fontSize: 12.5, color: 'var(--ink-soft)', lineHeight: 1.5, marginBottom: 12 }}>
+                This record's details were submitted to the Hedera Consensus Service at the time of confirmation — creating a tamper-proof audit entry.
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 12 }}>
+                <div className="detail-row" style={{ background: 'none', padding: 0 }}>
+                  <span className="detail-key">Network</span>
+                  <span className="detail-val" style={{ textTransform: 'capitalize' }}>
+                    {record.hcs_network ?? 'testnet'}
+                  </span>
+                </div>
+                {record.hcs_sequence_number != null && (
+                  <div className="detail-row" style={{ background: 'none', padding: 0 }}>
+                    <span className="detail-key">Sequence</span>
+                    <span className="detail-val" style={{ fontFamily: 'var(--font-mono)', fontSize: 12.5 }}>
+                      #{record.hcs_sequence_number}
+                    </span>
+                  </div>
+                )}
+                <div className="detail-row" style={{ background: 'none', padding: 0 }}>
+                  <span className="detail-key">Transaction</span>
+                  <span className="detail-val" style={{
+                    fontFamily: 'var(--font-mono)', fontSize: 11,
+                    wordBreak: 'break-all', maxWidth: 160,
+                  }}>
+                    {record.hcs_transaction_id}
+                  </span>
+                </div>
+              </div>
+              <a
+                href={`https://hashscan.io/${record.hcs_network ?? 'testnet'}/transaction/${encodeURIComponent(record.hcs_transaction_id)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-secondary btn-sm"
+                style={{ display: 'flex', alignItems: 'center', gap: 6, width: '100%', justifyContent: 'center', textDecoration: 'none' }}
+              >
+                <Icon name="eye" size={13} /> View on Hashscan
+              </a>
+            </div>
+          ) : record.status === 'confirmed' ? (
+            <div className="card" style={{ borderStyle: 'dashed' }}>
+              <div className="eyebrow" style={{ marginBottom: 8 }}>Hedera anchor</div>
+              <p style={{ fontSize: 12.5, color: 'var(--ink-faint)', lineHeight: 1.5 }}>
+                Hedera anchoring is not configured. Add <code style={{ fontSize: 11 }}>HEDERA_ACCOUNT_ID</code>, <code style={{ fontSize: 11 }}>HEDERA_PRIVATE_KEY</code>, and <code style={{ fontSize: 11 }}>HEDERA_TOPIC_ID</code> to your Vercel environment variables.
+              </p>
+            </div>
+          ) : null}
         </div>
       </div>
 

@@ -50,7 +50,7 @@ function reducer(state: State, action: Action): State {
 interface AppContextValue {
   state: State;
   createVehicle: (data: Omit<Vehicle, 'id' | 'created_at' | 'updated_at'>) => string;
-  addRecord: (data: Omit<VehicleRecord, 'id' | 'created_at' | 'updated_at'>) => void;
+  addRecord: (data: Omit<VehicleRecord, 'id' | 'created_at' | 'updated_at'>) => string;
   updateRecord: (record: VehicleRecord) => void;
   deleteRecord: (id: string) => void;
   showToast: (msg: string) => void;
@@ -72,10 +72,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return id;
   }, []);
 
-  const addRecord = useCallback((data: Omit<VehicleRecord, 'id' | 'created_at' | 'updated_at'>) => {
+  const addRecord = useCallback((data: Omit<VehicleRecord, 'id' | 'created_at' | 'updated_at'>): string => {
     const id = genId('r');
     const now = new Date().toISOString();
     dispatch({ type: 'ADD_RECORD', record: { id, ...data, created_at: now, updated_at: now } });
+    return id;
   }, []);
 
   const updateRecord = useCallback((record: VehicleRecord) => {

@@ -49,6 +49,9 @@ export interface VehicleRecord {
   created_at: string;
   updated_at: string;
   confirmed_at: string | null;
+  hcs_transaction_id?: string | null;
+  hcs_sequence_number?: number | null;
+  hcs_network?: 'testnet' | 'mainnet' | null;
 }
 
 export interface EvidenceDocument {

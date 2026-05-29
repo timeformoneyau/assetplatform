@@ -13,7 +13,7 @@ const TOP_TYPES: RecordType[] = ['service', 'repair', 'inspection', 'registratio
 export function ReviewParsed() {
   const { id: vehicleId } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { state, addRecord, showToast } = useApp();
+  const { state, addRecord, updateRecord, showToast } = useApp();
 
   const vehicle = state.vehicles.find(v => v.id === vehicleId);
 
@@ -44,7 +44,8 @@ export function ReviewParsed() {
 
   const handleConfirm = () => {
     if (!vehicleId) return;
-    addRecord({
+    const now = new Date().toISOString();
+    const baseData = {
       vehicle_id: vehicleId,
       record_type: fields.record_type,
       record_date: fields.record_date,
@@ -53,13 +54,39 @@ export function ReviewParsed() {
       summary: fields.summary,
       notes: null,
       cost: fields.cost ? parseFloat(fields.cost.replace(/[^0-9.]/g, '')) : null,
-      status: 'confirmed',
-      source_type: 'upload',
+      status: 'confirmed' as const,
+      source_type: 'upload' as const,
       doc_name: ext.doc_name,
-      confirmed_at: new Date().toISOString(),
-    });
+      confirmed_at: now,
+      hcs_transaction_id: null as string | null,
+      hcs_sequence_number: null as number | null,
+      hcs_network: null as 'testnet' | 'mainnet' | null,
+    };
+
+    const recordId = addRecord(baseData);
     showToast('Record confirmed & added');
     navigate(`/vehicles/${vehicleId}`);
+
+    // Fire-and-forget: anchor to Hedera, silently update record on success
+    fetch('/api/anchor-record', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ record: { id: recordId, ...baseData } }),
+    })
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (!data?.transaction_id) return;
+        updateRecord({
+          id: recordId,
+          ...baseData,
+          created_at: now,
+          updated_at: now,
+          hcs_transaction_id: data.transaction_id,
+          hcs_sequence_number: data.sequence_number ?? null,
+          hcs_network: data.network ?? 'testnet',
+        });
+      })
+      .catch(() => {});
   };
 
   if (!vehicle) {
