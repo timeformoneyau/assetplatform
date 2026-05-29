@@ -9,7 +9,8 @@ export type RecordType =
   | 'tyres'
   | 'battery'
   | 'recall'
-  | 'other';
+  | 'other'
+  | 'test';
 
 export type FuelType = 'Petrol' | 'Diesel' | 'Hybrid' | 'Plug-in hybrid' | 'Electric' | 'LPG';
 export type BodyType = 'Sedan' | 'Hatchback' | 'Wagon' | 'SUV' | 'Ute' | 'Van' | 'Coupe';
@@ -108,4 +109,5 @@ export const RECORD_TYPE_LABELS: Record<RecordType, string> = {
   battery: 'Battery',
   recall: 'Recall',
   other: 'Other',
+  test: 'Test',
 };

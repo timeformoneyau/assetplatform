@@ -8,7 +8,7 @@ import { MOCK_EXTRACTION } from '../data/mockData';
 import { RECORD_TYPE_LABELS } from '../types';
 import type { RecordType, ParsedExtraction } from '../types';
 
-const TOP_TYPES: RecordType[] = ['service', 'repair', 'inspection', 'registration', 'other'];
+const TOP_TYPES: RecordType[] = ['service', 'repair', 'inspection', 'registration', 'other', 'test'];
 
 export function ReviewParsed() {
   const { id: vehicleId } = useParams<{ id: string }>();

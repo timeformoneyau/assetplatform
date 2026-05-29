@@ -8,20 +8,21 @@ export const config = {
   },
 };
 
-const EXTRACTION_PROMPT = `You are a document parser for a vehicle service record system. Extract key fields from this vehicle document.
+const EXTRACTION_PROMPT = `You are a document parser. Extract key fields from the provided document.
 
-Extract:
-- type: record type — one of: service, repair, inspection, registration, warranty, tyres, battery, recall, other
-- date: service/transaction date in YYYY-MM-DD format
-- odometer: vehicle odometer reading in km (integer, no units)
-- provider: business/provider name
-- summary: brief description of work done (max 80 characters)
-- cost: total cost as a number (no currency symbol)
+Extract these fields:
+- type: best matching category — one of: service, repair, inspection, registration, warranty, tyres, battery, recall, other, test
+  Use "test" if the document is not a vehicle service record (e.g. a food receipt, a book page, a handwritten note).
+- date: the primary date on the document in YYYY-MM-DD format
+- odometer: vehicle odometer reading in km if present (integer); otherwise null
+- provider: the issuing business, author, or organisation name
+- summary: a one-line description of what this document is (max 80 characters)
+- cost: total monetary amount if present as a number; otherwise null
 
 Also extract:
-- doc_type: what kind of document this is (e.g. "Tax Invoice", "Service Report", "Registration Certificate")
-- vendor_block: the business name and address as printed on the document
-- items: list of line items or services (array of strings, max 8)
+- doc_type: what kind of document this is (e.g. "Tax Invoice", "Receipt", "Handwritten Note", "Service Report")
+- vendor_block: the issuing party name and address if shown; otherwise an empty string
+- items: key line items, services, or bullet points from the document (array of strings, max 8)
 
 Respond ONLY with valid JSON in this exact structure — no other text, no markdown fences:
 {
@@ -30,7 +31,7 @@ Respond ONLY with valid JSON in this exact structure — no other text, no markd
   "items": ["Oil change", "Oil filter"],
   "fields": {
     "type":     { "value": "service", "confidence": 0.95, "label": "Record type" },
-    "date":     { "value": "2024-03-15", "confidence": 0.98, "label": "Service date" },
+    "date":     { "value": "2024-03-15", "confidence": 0.98, "label": "Date" },
     "odometer": { "value": 87500, "confidence": 0.92, "label": "Odometer (km)" },
     "provider": { "value": "Smith Auto Service", "confidence": 0.97, "label": "Provider" },
     "summary":  { "value": "60,000 km service", "confidence": 0.90, "label": "Summary" },
