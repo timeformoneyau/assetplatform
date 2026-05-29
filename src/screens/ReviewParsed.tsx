@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { PageHeader } from '../components/PageHeader';
@@ -6,7 +6,7 @@ import { Breadcrumb } from '../components/Breadcrumb';
 import { Icon } from '../components/Icon';
 import { MOCK_EXTRACTION } from '../data/mockData';
 import { RECORD_TYPE_LABELS } from '../types';
-import type { RecordType } from '../types';
+import type { RecordType, ParsedExtraction } from '../types';
 
 const TOP_TYPES: RecordType[] = ['service', 'repair', 'inspection', 'registration', 'other'];
 
@@ -16,15 +16,26 @@ export function ReviewParsed() {
   const { state, addRecord, showToast } = useApp();
 
   const vehicle = state.vehicles.find(v => v.id === vehicleId);
-  const ext = MOCK_EXTRACTION;
+
+  const ext = useMemo<ParsedExtraction>(() => {
+    try {
+      const stored = sessionStorage.getItem('vp_pending_extraction');
+      if (stored) return JSON.parse(stored) as ParsedExtraction;
+    } catch {}
+    return MOCK_EXTRACTION;
+  }, []);
+
+  useEffect(() => {
+    return () => { sessionStorage.removeItem('vp_pending_extraction'); };
+  }, []);
 
   const [fields, setFields] = useState({
-    record_type: String(ext.fields.type.value) as RecordType,
-    record_date: String(ext.fields.date.value),
-    odometer: String(ext.fields.odometer.value),
-    provider_name: String(ext.fields.provider.value),
-    summary: String(ext.fields.summary.value),
-    cost: String(ext.fields.cost.value),
+    record_type: String(ext.fields.type.value ?? 'other') as RecordType,
+    record_date: String(ext.fields.date.value ?? ''),
+    odometer: ext.fields.odometer.value != null ? String(ext.fields.odometer.value) : '',
+    provider_name: String(ext.fields.provider.value ?? ''),
+    summary: String(ext.fields.summary.value ?? ''),
+    cost: ext.fields.cost.value != null ? String(ext.fields.cost.value) : '',
   });
 
   const setField = (k: string, v: string) => setFields(f => ({ ...f, [k]: v }));

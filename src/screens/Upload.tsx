@@ -40,14 +40,40 @@ export function Upload() {
     };
   }, [selected]);
 
-  const runMockPipeline = () => {
+  const toBase64 = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve((reader.result as string).split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+  const runPipeline = async () => {
+    if (!selected) return;
     setUploadState('uploading');
-    setTimeout(() => {
+    try {
+      const file_base64 = await toBase64(selected.file);
       setUploadState('parsing');
-      setTimeout(() => {
-        navigate(`/vehicles/${vehicleId}/review`);
-      }, 1800);
-    }, 1200);
+      const response = await fetch('/api/parse-document', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          file_base64,
+          file_type: selected.file.type,
+          file_name: selected.file.name,
+        }),
+      });
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({ error: 'Upload failed' }));
+        throw new Error(body.error ?? 'Upload failed');
+      }
+      const extraction = await response.json();
+      sessionStorage.setItem('vp_pending_extraction', JSON.stringify(extraction));
+      navigate(`/vehicles/${vehicleId}/review`);
+    } catch (err: any) {
+      setErrorMsg(err.message ?? 'Something went wrong. Please try again.');
+      setUploadState('error');
+    }
   };
 
   const handleFile = (file: File) => {
@@ -285,7 +311,7 @@ export function Upload() {
               >
                 <Icon name="camera" size={13} /> Retake photo
               </button>
-              <button className="btn btn-accent" onClick={runMockPipeline}>
+              <button className="btn btn-accent" onClick={runPipeline}>
                 Continue <Icon name="arrow_right" size={14} />
               </button>
             </div>
