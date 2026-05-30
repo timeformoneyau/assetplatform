@@ -1,5 +1,5 @@
 export function fmtDate(s: string): string {
-  const d = new Date(s + 'T00:00:00');
+  const d = new Date(s.includes('T') ? s : s + 'T00:00:00');
   return d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 

@@ -69,7 +69,7 @@ export function Timeline({ records, vehicleId, filter = 'all' }: Props) {
                 <span className="ledger-provider">{truncate(rec.provider_name, 30)}</span>
               )}
               {rec.odometer != null && (
-                <span className="ledger-odo">{fmtKm(rec.odometer)} km</span>
+                <span className="ledger-odo">{fmtKm(rec.odometer)}</span>
               )}
               {rec.cost != null && (
                 <span className="ledger-odo">{fmtMoney(rec.cost)}</span>
